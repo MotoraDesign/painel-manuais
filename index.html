@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel de manuais · Motora</title>
+<link rel="icon" href="assets/motora-mark-purple.svg">
+<style>
+@font-face{ font-family:'Ana Banana'; src:url('assets/AnaBanana-Variable.ttf') format('truetype'); font-weight:100 900; font-display:swap; }
+:root{ --purple:#ae6bfd; --purple-dim:#8a4fd6; --pink:#f4dacf; --orange:#e46e4b; --bg:#141118; --raised:#1d1a22; --raised-2:#25212b; --line:#332e3c; --ink:#fff; --muted:#a9a3b3; --ok:#7fbf7f; }
+*{ box-sizing:border-box; }
+html,body{ margin:0; background:var(--bg); color:var(--ink); font-family:'Ana Banana', system-ui, sans-serif; font-size:15px; line-height:1.5; }
+a{ color:var(--purple); text-decoration:none; } a:hover{ color:#c79bff; }
+button{ font:inherit; cursor:pointer; }
+.wrap{ max-width:1180px; margin:0 auto; padding:28px 28px 80px; }
+header{ display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; padding-bottom:24px; border-bottom:1px solid var(--line); }
+.brand{ display:flex; align-items:center; gap:14px; }
+.brand img{ height:26px; }
+.brand span{ font-weight:600; color:var(--muted); font-size:14px; padding-left:14px; border-left:1px solid var(--line); }
+.actions{ display:flex; gap:10px; flex-wrap:wrap; }
+.btn{ border:1px solid var(--line); background:transparent; color:var(--ink); padding:10px 18px; border-radius:999px; font-weight:600; font-size:14px; transition:filter .2s, border-color .2s; }
+.btn:hover{ border-color:var(--muted); }
+.btn.pri{ background:var(--purple); border-color:var(--purple); color:var(--bg); }
+.btn.pri:hover{ filter:brightness(1.08); }
+.btn:disabled{ opacity:.4; cursor:default; }
+h1{ font-weight:900; font-size:44px; line-height:1.05; letter-spacing:-1px; margin:40px 0 6px; }
+.lead{ color:var(--muted); margin:0 0 28px; max-width:64ch; }
+.bar{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-bottom:22px; }
+.bar input{ flex:1 1 260px; background:var(--raised); border:1px solid var(--line); color:var(--ink); border-radius:999px; padding:11px 18px; font:inherit; }
+.bar input:focus, .card input:focus, .modal input:focus{ outline:none; border-color:var(--purple); box-shadow:0 0 0 3px rgba(174,107,253,.25); }
+.count{ color:var(--muted); font-size:13px; }
+.grid{ display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:18px; }
+.card{ background:var(--raised); border:1px solid var(--line); border-radius:20px; overflow:hidden; display:flex; flex-direction:column; }
+.card .logo{ height:150px; background:#fff; display:grid; place-items:center; padding:24px; }
+.card .logo img{ max-width:80%; max-height:90px; object-fit:contain; }
+.card .logo .ini{ width:72px; height:72px; border-radius:50%; background:var(--bg); color:var(--purple); display:grid; place-items:center; font-weight:900; font-size:30px; }
+.card .body{ padding:18px 20px 20px; display:flex; flex-direction:column; gap:10px; flex:1; }
+.card .nm{ font-weight:800; font-size:21px; line-height:1.15; }
+.card .meta{ color:var(--muted); font-size:13px; display:flex; flex-direction:column; gap:2px; }
+.tags{ display:flex; gap:6px; flex-wrap:wrap; }
+.tag{ font-size:12px; font-weight:600; padding:3px 10px; border-radius:999px; background:var(--raised-2); color:var(--muted); }
+.tag.warn{ background:rgba(228,110,75,.16); color:#f39a7e; }
+.tag.ok{ background:rgba(127,191,127,.14); color:var(--ok); }
+.card .row{ display:flex; gap:8px; margin-top:auto; padding-top:6px; }
+.card .row .btn{ flex:1; text-align:center; }
+.empty{ border:1px dashed var(--line); border-radius:20px; padding:40px; text-align:center; color:var(--muted); }
+.note{ background:var(--raised); border:1px solid var(--line); border-radius:20px; padding:16px 20px; color:var(--muted); font-size:14px; margin-bottom:22px; display:flex; gap:14px; align-items:center; justify-content:space-between; flex-wrap:wrap; }
+.note b{ color:var(--ink); }
+.modal{ position:fixed; inset:0; background:rgba(20,17,24,.75); display:grid; place-items:center; padding:20px; z-index:10; }
+.modal .box{ background:var(--raised); border:1px solid var(--line); border-radius:20px; padding:28px; width:min(520px, 100%); display:flex; flex-direction:column; gap:14px; max-height:90vh; overflow:auto; }
+.modal h2{ margin:0; font-weight:800; font-size:24px; }
+.modal p{ margin:0; color:var(--muted); font-size:14px; }
+.modal label{ display:flex; flex-direction:column; gap:6px; font-size:13px; font-weight:600; color:var(--muted); }
+.modal input[type=text], .modal input[type=password]{ background:var(--bg); border:1px solid var(--line); color:var(--ink); border-radius:12px; padding:11px 14px; font:inherit; }
+.modal .chk{ flex-direction:row; align-items:center; gap:10px; color:var(--ink); }
+.modal .foot{ display:flex; justify-content:flex-end; gap:10px; margin-top:6px; }
+.steps{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px; font-size:14px; }
+.steps li{ display:flex; gap:10px; align-items:center; color:var(--muted); }
+.steps li::before{ content:'○'; width:16px; color:var(--line); }
+.steps li.run{ color:var(--ink); } .steps li.run::before{ content:'◐'; color:var(--purple); }
+.steps li.done{ color:var(--ink); } .steps li.done::before{ content:'●'; color:var(--ok); }
+.steps li.err{ color:#f39a7e; } .steps li.err::before{ content:'✕'; color:var(--orange); }
+.login{ min-height:100vh; display:grid; place-items:center; padding:20px; }
+.login .box{ width:min(380px, 100%); display:flex; flex-direction:column; gap:16px; text-align:center; align-items:center; }
+.login img{ height:30px; margin-bottom:8px; }
+.login input{ width:100%; background:var(--raised); border:1px solid var(--line); color:var(--ink); border-radius:999px; padding:12px 18px; font:inherit; text-align:center; }
+.login .err{ color:#f39a7e; font-size:13px; min-height:1.2em; }
+[hidden]{ display:none !important; }
+</style>
+</head>
+<body>
+
+<div class="login" id="login">
+  <form class="box" id="loginForm">
+    <img src="assets/motora-wordmark-white.svg" alt="Motora">
+    <div style="font-weight:800; font-size:22px">Painel de manuais</div>
+    <input type="password" id="pw" placeholder="Senha" autocomplete="current-password" required>
+    <button class="btn pri" type="submit" style="width:100%">Entrar</button>
+    <div class="err" id="pwErr"></div>
+  </form>
+</div>
+
+<div class="wrap" id="app" hidden>
+  <header>
+    <div class="brand"><img src="assets/motora-wordmark-white.svg" alt="Motora"><span>Painel de manuais</span></div>
+    <div class="actions">
+      <button class="btn pri" type="button" id="newBtn">+ Novo manual</button>
+      <button class="btn" type="button" id="cfgBtn">Configurações</button>
+      <button class="btn" type="button" id="outBtn">Sair</button>
+    </div>
+  </header>
+  <h1>Manuais de marca</h1>
+  <p class="lead">Todos os repositórios com a etiqueta <b>manual-de-marca</b>. Clique em <b>Editar</b> para abrir o manual já no modo edição e publicar ajustes sem mexer em código.</p>
+  <div class="note" id="demoNote" hidden><span><b>Modo demonstração.</b> Conecte o GitHub da Motora em Configurações para listar os manuais reais.</span><button class="btn" type="button" data-open-cfg>Conectar GitHub</button></div>
+  <div class="bar"><input type="search" id="q" placeholder="Buscar por marca ou repositório…"><span class="count" id="count"></span><button class="btn" type="button" id="reload">Atualizar lista</button></div>
+  <div class="grid" id="list"></div>
+</div>
+
+<script>
+/* ============================================================
+   PAINEL DE MANUAIS · Motora
+   - Lista os repositórios do GitHub com a etiqueta (topic) "manual-de-marca".
+   - "Editar" abre o manual com ?admin=1 (entra direto no modo edição).
+   - "Novo manual" cria um repositório a partir do template, marca a etiqueta,
+     preenche o nome da marca e ativa o GitHub Pages.
+   - O token fica salvo só neste navegador, em 'motora-gh'. Publicado no mesmo
+     endereço do GitHub Pages dos manuais (ex.: motora.github.io/painel-manuais),
+     o token vale também para publicar de dentro de cada manual.
+   ============================================================ */
+const PASSWORD_HASH = '1f7589a3';      // senha padrão: motora-admin  (gere outra com fnv('nova-senha') no console)
+const DEFAULTS = { owner: '', template: 'manual-template', branch: 'main', topic: 'manual-de-marca', private: false };
+const DEMO = [{ name: 'aurora', repo: 'exemplo/manual-template', url: '../index.html', logo: '../assets/logos/logo-principal.svg', pushed: new Date().toISOString(), demo: true }];
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const fnv = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16); };
+const slug = (s) => String(s).normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+const cfg = { get() { try { return Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('motora-painel-cfg')) || {}); } catch (e) { return { ...DEFAULTS }; } }, set(v) { localStorage.setItem('motora-painel-cfg', JSON.stringify(v)); } };
+const token = { get() { try { return (JSON.parse(localStorage.getItem('motora-gh')) || {}).token || ''; } catch (e) { return ''; } }, set(t) { localStorage.setItem('motora-gh', JSON.stringify({ token: t })); } };
+const SESSION = 'motora-painel-session';
+const logged = () => Date.now() - (+localStorage.getItem(SESSION) || 0) < 12 * 3600 * 1000;
+
+async function api(path, opts = {}) {
+  const r = await fetch('https://api.github.com' + path, { ...opts, headers: { Accept: 'application/vnd.github+json', Authorization: `Bearer ${token.get()}`, ...(opts.body ? { 'Content-Type': 'application/json' } : {}) } });
+  if (r.status === 204) return null;
+  const data = await r.json().catch(() => ({}));
+  if (!r.ok) { const e = new Error(data.message || `GitHub ${r.status}`); e.status = r.status; throw e; }
+  return data;
+}
+const b64dec = (s) => decodeURIComponent(escape(atob(s.replace(/\n/g, ''))));
+const b64enc = (s) => btoa(unescape(encodeURIComponent(s)));
+
+/* ---------- login ---------- */
+function enter() { $('#login').hidden = true; $('#app').hidden = false; load(); }
+$('#loginForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  if (fnv($('#pw').value) !== PASSWORD_HASH) { $('#pwErr').textContent = 'Senha incorreta.'; return; }
+  localStorage.setItem(SESSION, Date.now()); enter();
+});
+$('#outBtn').addEventListener('click', () => { localStorage.removeItem(SESSION); location.reload(); });
+if (logged()) enter();
+
+/* ---------- lista ---------- */
+let ALL = [];
+async function load() {
+  const c = cfg.get(), t = token.get();
+  $('#demoNote').hidden = !!(t && c.owner);
+  if (!t || !c.owner) { ALL = DEMO; render(); return; }
+  $('#list').innerHTML = '<div class="empty">Carregando manuais…</div>';
+  try {
+    const res = await api(`/search/repositories?q=${encodeURIComponent(`topic:${c.topic} user:${c.owner}`)}&per_page=100&sort=updated`);
+    ALL = res.items.map((r) => ({
+      repo: r.full_name, name: r.name, desc: r.description, pushed: r.pushed_at, private: r.private,
+      url: r.homepage || `https://${r.owner.login.toLowerCase()}.github.io/${r.name}/`, branch: r.default_branch,
+    }));
+    render();
+    await Promise.all(ALL.map(async (m) => {
+      try {
+        const f = await api(`/repos/${m.repo}/contents/content/brand.js?ref=${m.branch}`);
+        const src = b64dec(f.content);
+        const nm = /\bname:\s*'([^']+)'/.exec(src); if (nm) m.brand = nm[1];
+        const lg = /\bsidebar:\s*'([^']+)'/.exec(src) || /\bprincipal:\s*'([^']+\.(?:svg|png))'/.exec(src); if (lg) m.logo = m.url + lg[1];
+        m.todo = (src.match(/\[preencher/g) || []).length;
+      } catch (e) {}
+    }));
+    render();
+  } catch (e) {
+    $('#list').innerHTML = `<div class="empty">Não foi possível listar: ${esc(e.message)}. Confira o token e o dono em Configurações.</div>`;
+  }
+}
+function draftPending(m) { try { return !!localStorage.getItem(`manual-admin:${m.brand || m.name}:draft`); } catch (e) { return false; } }
+function render() {
+  const q = slug($('#q').value || '');
+  const list = ALL.filter((m) => !q || slug(`${m.brand || ''} ${m.name} ${m.repo}`).includes(q));
+  $('#count').textContent = `${list.length} manual(is)`;
+  $('#list').innerHTML = list.length ? list.map((m, i) => `
+    <article class="card">
+      <div class="logo">${m.logo ? `<img src="${esc(m.logo)}" alt="${esc(m.brand || m.name)}" onerror="this.outerHTML='<span class=&quot;ini&quot;>${esc((m.brand || m.name)[0].toUpperCase())}</span>'">` : `<span class="ini">${esc((m.brand || m.name)[0].toUpperCase())}</span>`}</div>
+      <div class="body">
+        <div class="nm">${esc(m.brand || m.name)}</div>
+        <div class="meta"><span>${esc(m.repo)}</span><span>Atualizado em ${new Date(m.pushed).toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' })}</span></div>
+        <div class="tags">
+          ${m.demo ? '<span class="tag">exemplo</span>' : ''}
+          ${m.private ? '<span class="tag">privado</span>' : ''}
+          ${draftPending(m) ? '<span class="tag warn">rascunho não publicado</span>' : ''}
+          ${m.todo ? `<span class="tag warn">${m.todo} [preencher] no brand.js</span>` : m.todo === 0 ? '<span class="tag ok">brand.js completo</span>' : ''}
+        </div>
+        <div class="row"><a class="btn" href="${esc(m.url)}" target="_blank" rel="noopener">Abrir</a><button class="btn pri" type="button" data-edit="${i}">Editar</button></div>
+      </div>
+    </article>`).join('') : '<div class="empty">Nenhum manual encontrado.</div>';
+  $('#list').querySelectorAll('[data-edit]').forEach((b) => b.addEventListener('click', () => {
+    const m = list[+b.dataset.edit];
+    localStorage.setItem(SESSION, Date.now());
+    window.open(m.url + (m.url.includes('?') ? '&' : '?') + 'admin=1', '_blank', 'noopener');
+  }));
+}
+$('#q').addEventListener('input', render);
+$('#reload').addEventListener('click', load);
+
+/* ---------- modais ---------- */
+function modal(html) {
+  const m = document.createElement('div'); m.className = 'modal';
+  m.innerHTML = `<div class="box">${html}</div>`;
+  m.addEventListener('click', (e) => { if (e.target === m || e.target.dataset.close != null) m.remove(); });
+  document.body.appendChild(m); return m;
+}
+function openCfg() {
+  const c = cfg.get();
+  const m = modal(`<h2>Configurações</h2>
+    <p>Crie um token em GitHub → Settings → Developer settings → Fine-grained tokens, com acesso aos repositórios da Motora e permissões <b>Administration</b>, <b>Contents</b> e <b>Pages</b> (leitura e escrita). Ele fica salvo só neste navegador.</p>
+    <label>Dono dos repositórios (usuário ou organização)<input type="text" name="owner" value="${esc(c.owner)}" placeholder="motora"></label>
+    <label>Repositório do template<input type="text" name="template" value="${esc(c.template)}"></label>
+    <label>Etiqueta dos manuais<input type="text" name="topic" value="${esc(c.topic)}"></label>
+    <label>Token do GitHub<input type="password" name="token" value="${esc(token.get())}" placeholder="github_pat_…"></label>
+    <div class="foot"><button class="btn" type="button" data-close>Cancelar</button><button class="btn pri" type="button" data-save>Salvar</button></div>`);
+  m.querySelector('[data-save]').addEventListener('click', () => {
+    const v = {}; m.querySelectorAll('input').forEach((i) => { v[i.name] = i.value.trim(); });
+    token.set(v.token); delete v.token; cfg.set(Object.assign(cfg.get(), v)); m.remove(); load();
+  });
+}
+$('#cfgBtn').addEventListener('click', openCfg);
+document.addEventListener('click', (e) => { if (e.target.closest('[data-open-cfg]')) openCfg(); });
+
+/* ---------- novo manual ---------- */
+$('#newBtn').addEventListener('click', () => {
+  const c = cfg.get();
+  if (!token.get() || !c.owner) { openCfg(); return; }
+  const m = modal(`<h2>Novo manual</h2>
+    <p>Cria um repositório a partir de <b>${esc(c.owner)}/${esc(c.template)}</b>, com o nome da marca preenchido e o site publicado no GitHub Pages.</p>
+    <label>Nome da marca (grafia oficial)<input type="text" name="brand" placeholder="ex.: Nome da Marca" required></label>
+    <label>Repositório<input type="text" name="repo" placeholder="manual-nome-da-marca"></label>
+    <label class="chk"><input type="checkbox" name="priv"${c.private ? ' checked' : ''}> Repositório privado <span style="color:var(--muted); font-weight:400">(Pages em repositório privado exige plano pago do GitHub)</span></label>
+    <ul class="steps" hidden>
+      <li data-s="gen">Criar repositório a partir do template</li>
+      <li data-s="wait">Aguardar a cópia dos arquivos</li>
+      <li data-s="topic">Marcar etiqueta manual-de-marca</li>
+      <li data-s="brand">Preencher nome da marca e repositório no brand.js</li>
+      <li data-s="pages">Ativar o GitHub Pages</li>
+    </ul>
+    <p class="msg"></p>
+    <div class="foot"><button class="btn" type="button" data-close>Cancelar</button><button class="btn pri" type="button" data-go>Criar manual</button></div>`);
+  const f = (n) => m.querySelector(`[name="${n}"]`);
+  f('brand').addEventListener('input', () => { if (!f('repo').dataset.touched) f('repo').value = 'manual-' + slug(f('brand').value); });
+  f('repo').addEventListener('input', () => { f('repo').dataset.touched = '1'; });
+  m.querySelector('[data-go]').addEventListener('click', async (ev) => {
+    const brand = f('brand').value.trim(), name = slug(f('repo').value || 'manual-' + brand), priv = f('priv').checked;
+    if (!brand || !name) { m.querySelector('.msg').textContent = 'Preencha o nome da marca.'; return; }
+    ev.target.disabled = true; m.querySelectorAll('input').forEach((i) => { i.disabled = true; });
+    const steps = m.querySelector('.steps'); steps.hidden = false;
+    const st = (s, cls) => { const li = steps.querySelector(`[data-s="${s}"]`); li.className = cls; };
+    const full = `${c.owner}/${name}`;
+    let cur = 'gen';
+    try {
+      st('gen', 'run');
+      await api(`/repos/${c.owner}/${c.template}/generate`, { method: 'POST', body: JSON.stringify({ owner: c.owner, name, private: priv, description: `Manual da marca ${brand}` }) });
+      st('gen', 'done'); cur = 'wait'; st('wait', 'run');
+      let file = null;
+      for (let i = 0; i < 20 && !file; i++) { await new Promise((r) => setTimeout(r, 1500)); try { file = await api(`/repos/${full}/contents/content/brand.js`); } catch (e) {} }
+      if (!file) throw new Error('Os arquivos do template demoraram para aparecer. Tente "Atualizar lista" em instantes.');
+      st('wait', 'done'); cur = 'topic'; st('topic', 'run');
+      await api(`/repos/${full}/topics`, { method: 'PUT', body: JSON.stringify({ names: [c.topic] }) });
+      st('topic', 'done'); cur = 'brand'; st('brand', 'run');
+      let src = b64dec(file.content);
+      src = src.replace(/(\bname:\s*)'[^']*'/, `$1'${brand.replace(/'/g, "\\'")}'`)
+               .replace(/(\bfullName:\s*)'[^']*'/, `$1'${brand.replace(/'/g, "\\'")}'`)
+               .replace(/(\brepo:\s*)'[^']*'(,\s*\/\/ ex\.)/, `$1'${full}'$2`);
+      await api(`/repos/${full}/contents/content/brand.js`, { method: 'PUT', body: JSON.stringify({ message: `manual: marca ${brand}`, content: b64enc(src), sha: file.sha }) });
+      st('brand', 'done'); cur = 'pages'; st('pages', 'run');
+      try { await api(`/repos/${full}/pages`, { method: 'POST', body: JSON.stringify({ build_type: 'legacy', source: { branch: 'main', path: '/' } }) }); }
+      catch (e) { if (e.status !== 409) throw e; }
+      st('pages', 'done');
+      const url = `https://${c.owner.toLowerCase()}.github.io/${name}/`;
+      m.querySelector('.msg').innerHTML = `Pronto. O site fica disponível em cerca de 1 minuto: <a href="${url}" target="_blank" rel="noopener">${url}</a>`;
+      m.querySelector('.foot').innerHTML = '<button class="btn pri" type="button" data-close>Fechar</button>';
+      load();
+    } catch (e) {
+      st(cur, 'err');
+      m.querySelector('.msg').textContent = e.message;
+      ev.target.disabled = false;
+    }
+  });
+});
+</script>
+</body>
+</html>
